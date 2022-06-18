@@ -43,10 +43,19 @@ function start(){
       "image/PNG");
     var request = new chrome.cast.media.LoadRequest(mediaInfo);
     session.loadMedia(request, onMediaLoadSuccess, onError);
+    session.setTimeout(17000);
   }
   
   function onMediaLoadSuccess(e) {
     console.log('onMediaLoadSuccess', e);
+    //var idleInterval = setInterval(timerIncrement, 60000); // 1 minute
+  }
+
+  function timerIncrement() {
+    idleTime = idleTime + 1;
+    if (idleTime > 4) { // 5 minutes
+        context.stop();
+    }
   }
   
   function castContent() {
