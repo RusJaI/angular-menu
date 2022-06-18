@@ -1,0 +1,14 @@
+table {
+  font-family:'Century Gothic';
+  border-collapse: collapse;
+  background-color: backgroundcolor; 
+  table-layout: fixed;
+}
+
+td, th {
+  border: 0px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+
