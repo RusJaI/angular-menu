@@ -1,3 +1,4 @@
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { ProductModel } from './pages/ProductModel';
@@ -8,6 +9,9 @@ import { ProductModel } from './pages/ProductModel';
 
 export class PosserviceService {
 
+  authorization_key= "Basic YWU2NjU1OWQ0YTk4NDkwYmJjNmQ3NmUxNTQ1ZWI0ZjM=";
+  consumer_key= "ae66559d4a98490bbc6d76e1545eb4f3";
+  
   product_categories=[
     {
       "productCategoryId": 25,
@@ -81,7 +85,7 @@ export class PosserviceService {
 ];
 
 
-  constructor() {
+  constructor(private http:HttpClient) {
     this.getSelectedCategories();
     this.getAllProducts();
     this.getProductsForCategory(25);
@@ -94,9 +98,20 @@ export class PosserviceService {
   }
 
   getAllProducts():Observable<any[]>{
-    var productlist=JSON.parse(JSON.stringify(this.products));
-    console.log("###",productlist);
-    return  of(productlist);
+    var itemarr=[];
+    var url='https://publicapi.leaflogix.net/products';
+
+    const headers = new HttpHeaders()
+    .set('Accept', 'application/json')
+    .set("Authorization",this.authorization_key)
+    .set("ConsumerKey",this.consumer_key)
+    .set("Access-Control-Allow-Origin",'true');
+    
+    this.http.get<any>(url,{ headers: headers }).subscribe(data => {
+        itemarr = data;
+        console.log("response ",data);
+    })   
+    return of(itemarr) 
   }
 
   getProductsForCategory(cid):Observable<any[]>{
