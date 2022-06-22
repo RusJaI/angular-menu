@@ -81,9 +81,12 @@ export class AppComponent {
   }
 
   getCategoryItems(cat_id){
-    var itemarr:[];
-    
-    return itemarr;
+    var itemlist=[];
+    var posService:PosserviceService;
+    posService.getProductsForCategory(cat_id).subscribe((ilist:any[]) =>{
+      itemlist=ilist;
+    });
+    return itemlist;
   }
 
   ifCategoryFlagged(cflag: number): boolean {
