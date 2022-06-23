@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs'; 
+import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 
 
@@ -30,12 +30,10 @@ export class PosserviceService {
     }
   ];
 
-
   constructor(private http:HttpClient) {
     this.getSelectedCategories();
     this.getAllProducts();
-    var dd=this.getProductsForCategory(10296);
-    console.log("#getitemsforcatg:",dd);
+    this.getProductsForCategory(12);
    }
 
   getSelectedCategories():Observable<any[]>{
@@ -45,12 +43,12 @@ export class PosserviceService {
   }
 
   getAllProducts():Observable<any[]>{
-    var url='https://cors-anywhere.herokuapp.com/https://publicapi.leaflogix.net/products';
-
+   // var url='https://cors-anywhere.herokuapp.com/https://publicapi.leaflogix.net/products';
+    var url='http://127.0.0.1:8000/pos/allitems';
     const headers = new HttpHeaders()
     .set('Accept', 'application/json')
     .set("Authorization",this.authorization_key)
-    .set("ConsumerKey",this.consumer_key);
+    .set("ConsumerKey",this.consumer_key)
   
     return this.http.get<any>(url,{ headers: headers })
     .pipe(
@@ -79,5 +77,5 @@ export class PosserviceService {
     })
     return of(categoryitems);
   }
-
+  
 }
