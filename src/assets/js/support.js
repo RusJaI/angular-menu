@@ -38,6 +38,7 @@ function start(){
   function onSessionRequestSuccess(session) {
     console.log('onSessionRequestSuccess', session);
   
+    //
     var mediaInfo = new chrome.cast.media.MediaInfo(
       "https://menubord-app.web.app/assets/btn.PNG",
       "image/PNG");

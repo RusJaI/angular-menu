@@ -4,6 +4,8 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ScreenviewComponent } from './pages/screenview/screenview.component';
+import { NgxCaptureModule } from 'ngx-capture';
+import { HttpClientModule, HttpClient } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -12,7 +14,9 @@ import { ScreenviewComponent } from './pages/screenview/screenview.component';
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    NgxCaptureModule,
+    HttpClientModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
