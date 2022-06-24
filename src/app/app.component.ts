@@ -1,5 +1,5 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ScreenModel } from './pages/screenmodel';
 import { PosserviceService } from './posservice.service';
 import { ScreenserviceService } from './screenservice.service';
@@ -9,14 +9,14 @@ import { ScreenserviceService } from './screenservice.service';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
+export class AppComponent{
+  countryData = null;
   screen_list :ScreenModel []=[]
   categoryList:any[]=[];
   screendata_map=new Map();
   currentYear = new Date().getFullYear();
 
   constructor(screenService:ScreenserviceService,posService:PosserviceService){
-
     screenService.getScreens().subscribe((scrn:ScreenModel[]) =>{
       this.screen_list=scrn;
     });
@@ -28,7 +28,9 @@ export class AppComponent {
     console.log("Prod : ",this.categoryList);
     this.distributeData();
     console.log('#datamap : ',this.screendata_map);
+    
   }
+
 
   distributeData(){
     var cflag=0;//category flag
@@ -82,10 +84,9 @@ export class AppComponent {
 
   getCategoryItems(cat_id){
     var itemlist=[];
-    var posService:PosserviceService;
-    posService.getProductsForCategory(cat_id).subscribe((ilist:any[]) =>{
+    /*posService.getProductsForCategory(cat_id).subscribe((ilist:any[]) =>{
       itemlist=ilist;
-    });
+    });*/
     return itemlist;
   }
 

@@ -42,14 +42,16 @@ export class PosserviceService {
     return  of(categorylist);
   }
 
-  getAllProducts():Observable<any[]>{
+  /*getAllProducts():Observable<any[]>{
    // var url='https://cors-anywhere.herokuapp.com/https://publicapi.leaflogix.net/products';
-    var url='http://127.0.0.1:8000/pos/allitems';
+    //var url='https://publicapi.leaflogix.net/products';
+    //var url='http://localhost:8000/pos/allitems';
+    var url='pos/allitems';
+
     const headers = new HttpHeaders()
     .set('Accept', 'application/json')
     .set("Authorization",this.authorization_key)
     .set("ConsumerKey",this.consumer_key)
-  
     return this.http.get<any>(url,{ headers: headers })
     .pipe(
       map((response) => {
@@ -63,18 +65,29 @@ export class PosserviceService {
       )
     );
   }
+*/
+rootURL = '/pos';
 
+getAllProducts() {
+    var resp= this.http.get(this.rootURL + '/allitems',{responseType: 'text'});
+    console.log("#Resp",resp);
+    resp.subscribe(s=>{
+      console.log("##sss",s);
+    });
+    return resp;
+}
   getProductsForCategory(cid){
     var allitems=this.getAllProducts();
     var categoryitems=[];
 
-    allitems.subscribe(obj=>{
+   /* allitems.subscribe(obj=>{
+      console.log("GetllProf: ",obj);
       obj.forEach(itm=>{
         if(itm.categoryId == cid){
           categoryitems.push(itm);
         }
       });
-    })
+    })*/
     return of(categoryitems);
   }
   

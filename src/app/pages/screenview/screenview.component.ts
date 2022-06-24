@@ -30,9 +30,9 @@ export class ScreenviewComponent implements OnInit{
   @Input() screendata_map:Map<number,ScreenModel>;
   constructor(posService:PosserviceService,private route: ActivatedRoute,private captureService:NgxCaptureService,private httpclient: HttpClient) { 
 
-    posService.getAllProducts().subscribe((prd:any[]) =>{
+   /* posService.getAllProducts().subscribe((prd:any[]) =>{
       this.productsList=prd;
-    });
+    });*/
 
     //console.log("##input : ",this.name);
 
