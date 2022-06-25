@@ -6,7 +6,6 @@ import { ScreenModel } from '../screenmodel';
 import { NgxCaptureService } from 'ngx-capture';
 import { HttpClient } from '@angular/common/http';
 import { saveAs } from 'file-saver';
-import * as FileSaver from 'file-saver';
 
 declare var start: any,castContent:any;
 @Component({
@@ -30,18 +29,13 @@ export class ScreenviewComponent implements OnInit{
   @Input() screendata_map:Map<number,ScreenModel>;
   constructor(posService:PosserviceService,private route: ActivatedRoute,private captureService:NgxCaptureService,private httpclient: HttpClient) { 
 
-   /* posService.getAllProducts().subscribe((prd:any[]) =>{
-      this.productsList=prd;
-    });*/
-
-    //console.log("##input : ",this.name);
 
    }
   async ngOnInit() {
     new start();
     await this.route.paramMap.subscribe( params =>{
       //this.tablestyle=params.get('tablestyle');
-      console.log("ttt",this.tablestyle);
+      console.log("screenview:tablestyle",this.tablestyle);
       this.backgroundcolor=this.tablestyle.bgcolor;
       if(this.backgroundcolor=="white"){
         this.textcolor="black";
@@ -60,7 +54,7 @@ export class ScreenviewComponent implements OnInit{
         this.screenwidth=this.screenwidth+"px";
       }
     
-      console.log("#dimensions : ",this.screenheight,this.screenwidth);
+      console.log("#screenview:table dimensions : ",this.screenheight,this.screenwidth);
  
     }
    );
@@ -68,7 +62,7 @@ export class ScreenviewComponent implements OnInit{
 
   buttonAction(){
     this.capture();
-    console.log("button funvtion");
+    console.log("button function");
     new castContent();
   }
 
@@ -95,6 +89,16 @@ export class ScreenviewComponent implements OnInit{
   saveFile() {
     const file = this.DataURIToBlob(this.imgBase64);
     //saveAs(file, '/assets/screens/hello.png');
-    saveAs(file, `../../../assets/screens/${this.tablestyle.id}.png`);
+    var filename= `${this.tablestyle.id}.png`;
+    saveAs(file, filename);
+
+    let formData:FormData = new FormData();  
+    formData.append("image", file);
+    formData.append("name",filename);
+    var rootURL = '/pos';
+    var req= this.httpclient.post(rootURL + '/saveimage',formData,{responseType: 'blob'});
+    req.subscribe(s=>{
+      console.log("req : ",s);      
+    })
   }
 }

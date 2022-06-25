@@ -20,7 +20,7 @@ export class ScreenserviceService {
 
   getScreens():Observable<ScreenModel[]>{
     var screenlist=JSON.parse(JSON.stringify(this.screens));
-    console.log("###",screenlist);
+    console.log("service: screenlist",screenlist);
     return  of(screenlist);
   }
 

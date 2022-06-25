@@ -15,8 +15,8 @@ export class AppComponent{
   categoryList:any[]=[];
   screendata_map=new Map();
   currentYear = new Date().getFullYear();
-
-  constructor(screenService:ScreenserviceService,posService:PosserviceService){
+  allitemsList;
+  constructor(private screenService:ScreenserviceService,private posService:PosserviceService){
     screenService.getScreens().subscribe((scrn:ScreenModel[]) =>{
       this.screen_list=scrn;
     });
@@ -25,13 +25,16 @@ export class AppComponent{
       this.categoryList=ctg;
     });
     
-    console.log("Prod : ",this.categoryList);
+    this.allitemsList=posService.allitems_arr;
+    
+    console.log("selected categories : ",this.categoryList);
     this.distributeData(posService);
-    console.log('#datamap : ',this.screendata_map);
+    console.log('appComponent:#screen data map : ',this.screendata_map);
 
+    this.getItemsCount(posService,10296);
+    this.getCategoryItems_cp(posService,10296);
   }
-
-
+ 
   distributeData(posService){
     var cflag=0;//category flag
     var iflag=0;//item flag
@@ -41,12 +44,14 @@ export class AppComponent{
     this.screen_list.forEach(scrn=>{
       console.log("In distribute data :",scrn.id);
       if(scrn.type=="menu"){
+        console.log("In distribute data menu :",scrn.id);
         sflag=true;
         while(sflag){ 
           cat_id=this.getCategoryId(cflag);
           cat_items= this.getCategoryItems(posService,cat_id);
-          item_count=cat_items?.length;
-
+          item_count=cat_items.length;
+          console.log("appComponent:catitemcount,iflag",item_count,cat_items);
+          
           if((item_count-iflag)<maxrows){//less than screen size
             display_count=iflag+(item_count-iflag)
             this.setScreenDisplayContent(scrn.id,cat_items.slice(iflag,display_count));
@@ -78,7 +83,7 @@ export class AppComponent{
 
   getCategoryId(cflag){
     var id= this.categoryList[cflag].productCategoryId;
-    console.log("getCategoryId() :",id);
+    console.log("appComponents:getCategoryId() :",id);
     return id;
   }
 
@@ -87,9 +92,17 @@ export class AppComponent{
     posService.getProductsForCategory(cat_id).subscribe((ilist:any[]) =>{
       itemlist=ilist;
     });
-    console.log("#serviced:",itemlist);
-    
+    console.log("#appcompponent:items for given category:",itemlist);
     return itemlist;
+  }
+
+  getItemsCount(posService,cat_id){
+    var cnt=[];
+    posService.getCountForCategory(cat_id).subscribe((c) =>{
+      cnt=c;
+    });
+    console.log("#appcompponent:count for given category:",cnt);
+    return cnt;
   }
 
   ifCategoryFlagged(cflag: number): boolean {
@@ -98,10 +111,19 @@ export class AppComponent{
   }
 
   setScreenDisplayContent(scrn_id,content:any[]) {
-    console.log("screendata_map : id,content :",scrn_id,content);
     this.screendata_map.set(scrn_id,content);
   }
 
+  roleData;
+  getCategoryItems_cp(posService,cat_id){
+    console.log("allitemslist",this.allitemsList);
+
+    posService.getAllProducts().subscribe(data => {
+      this.roleData = data;
+      console.log("data['data']",data);
+      console.log("roleData",this.roleData);
+    });
+  }
 }
 
 
