@@ -26,13 +26,13 @@ export class AppComponent{
     });
     
     console.log("Prod : ",this.categoryList);
-    this.distributeData();
+    this.distributeData(posService);
     console.log('#datamap : ',this.screendata_map);
-    
+
   }
 
 
-  distributeData(){
+  distributeData(posService){
     var cflag=0;//category flag
     var iflag=0;//item flag
     var sflag=true;//space flag
@@ -44,7 +44,7 @@ export class AppComponent{
         sflag=true;
         while(sflag){ 
           cat_id=this.getCategoryId(cflag);
-          cat_items=this.getCategoryItems(cat_id);
+          cat_items= this.getCategoryItems(posService,cat_id);
           item_count=cat_items?.length;
 
           if((item_count-iflag)<maxrows){//less than screen size
@@ -82,11 +82,13 @@ export class AppComponent{
     return id;
   }
 
-  getCategoryItems(cat_id){
+  getCategoryItems(posService,cat_id){
     var itemlist=[];
-    /*posService.getProductsForCategory(cat_id).subscribe((ilist:any[]) =>{
+    posService.getProductsForCategory(cat_id).subscribe((ilist:any[]) =>{
       itemlist=ilist;
-    });*/
+    });
+    console.log("#serviced:",itemlist);
+    
     return itemlist;
   }
 

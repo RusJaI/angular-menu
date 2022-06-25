@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
+import { map, catchError, filter, scan } from 'rxjs/operators';
 
 
 @Injectable({
@@ -11,10 +11,10 @@ export class PosserviceService {
 
   authorization_key= "Basic YWU2NjU1OWQ0YTk4NDkwYmJjNmQ3NmUxNTQ1ZWI0ZjM=";
   consumer_key= "ae66559d4a98490bbc6d76e1545eb4f3";
-  
+  allitems_arr=[];
   product_categories=[
     {
-      "productCategoryId": 25,
+      "productCategoryId": 10296,
       "productCategoryName": "string",
       "flagged": "false"
     },
@@ -24,7 +24,7 @@ export class PosserviceService {
       "flagged": "true"
     },
     {
-      "productCategoryId": 10,
+      "productCategoryId": 10303,
       "productCategoryName": "string",
       "flagged": "false"
     }
@@ -33,7 +33,7 @@ export class PosserviceService {
   constructor(private http:HttpClient) {
     this.getSelectedCategories();
     this.getAllProducts();
-    this.getProductsForCategory(12);
+    this.getProductsForCategory(10296);
    }
 
   getSelectedCategories():Observable<any[]>{
@@ -70,17 +70,38 @@ rootURL = '/pos';
 
 getAllProducts() {
     var resp= this.http.get(this.rootURL + '/allitems',{responseType: 'text'});
-    console.log("#Resp",resp);
     resp.subscribe(s=>{
       console.log("##sss",s);
     });
     return resp;
 }
   getProductsForCategory(cid){
-    var allitems=this.getAllProducts();
+    var allitems;
     var categoryitems=[];
 
-   /* allitems.subscribe(obj=>{
+    this.getAllProducts().pipe().subscribe((obj) => {
+      allitems=obj
+      console.log("Users",allitems);
+      var processed= allitems.replace(/'/g, '"');
+      processed=processed.replace(/None/g, "\"\"");
+      processed=processed.replace(/True/g, '"True"');
+      processed=processed.replace(/False/g, '"False"');
+      processed=processed.replace(/}/g,'},');
+      processed=processed.slice(0,-1);
+      processed='['+processed+']';
+      console.log("Processed",(processed));
+      var itemarr=JSON.parse(processed);
+      
+      itemarr.forEach(element => {
+        console.log("Ele",element.categoryId);
+        if(element.categoryId==cid){
+          categoryitems.push(element);
+        }
+      });
+    });
+    console.log("final:",categoryitems);
+    
+    /* allitems.subscribe(obj=>{
       console.log("GetllProf: ",obj);
       obj.forEach(itm=>{
         if(itm.categoryId == cid){
