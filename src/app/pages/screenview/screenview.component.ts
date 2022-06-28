@@ -21,12 +21,15 @@ export class ScreenviewComponent implements OnInit{
   textcolor;
   screenwidth;
   aspectratio;
+  screen_id;
   screenheight;
+  product_id;
+  product_name;
   productsList:any[]=[];
   content:any[];
   imgBase64:any='';
   @Input() tablestyle:any;
-  @Input() screendata_map:Map<number,ScreenModel>;
+  @Input() screendata_map;
   constructor(posService:PosserviceService,private route: ActivatedRoute,private captureService:NgxCaptureService,private httpclient: HttpClient) { 
 
 
@@ -36,6 +39,7 @@ export class ScreenviewComponent implements OnInit{
     await this.route.paramMap.subscribe( params =>{
       //this.tablestyle=params.get('tablestyle');
       console.log("screenview:tablestyle",this.tablestyle);
+      this.screen_id=this.tablestyle.id;
       this.backgroundcolor=this.tablestyle.bgcolor;
       if(this.backgroundcolor=="white"){
         this.textcolor="black";
@@ -53,7 +57,9 @@ export class ScreenviewComponent implements OnInit{
         this.screenwidth=this.aspectratio*600;
         this.screenwidth=this.screenwidth+"px";
       }
-    
+      var productdata=this.screendata_map.get(this.screen_id)
+     // this.product_id=productdata['productId'];
+      //this.product_name=productdata.productName;
       console.log("#screenview:table dimensions : ",this.screenheight,this.screenwidth);
  
     }
@@ -63,7 +69,7 @@ export class ScreenviewComponent implements OnInit{
   buttonAction(){
     this.capture();
     console.log("button function");
-    new castContent();
+    new castContent(this.tablestyle.id+'');
   }
 
   capture(){ 

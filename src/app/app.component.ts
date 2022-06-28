@@ -1,21 +1,25 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ScreenModel } from './pages/screenmodel';
 import { PosserviceService } from './posservice.service';
 import { ScreenserviceService } from './screenservice.service';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent{
+export class AppComponent implements OnDestroy{
   countryData = null;
   screen_list :ScreenModel []=[]
   categoryList:any[]=[];
   screendata_map=new Map();
   currentYear = new Date().getFullYear();
-  allitemsList;
+  allitemsList=[];
+
+  destroy$: Subject<boolean> = new Subject<boolean>();
+
   constructor(private screenService:ScreenserviceService,private posService:PosserviceService){
     screenService.getScreens().subscribe((scrn:ScreenModel[]) =>{
       this.screen_list=scrn;
@@ -25,17 +29,22 @@ export class AppComponent{
       this.categoryList=ctg;
     });
     
-    this.allitemsList=posService.allitems_arr;
-    
+    //this.allitemsList=posService.allitems_arr;
+     this.posService.getAllProductsRequest().pipe(takeUntil(this.destroy$)).subscribe((items:any) => {
+      var arr=this.posService.processJson(items);
+      arr.forEach(item=>{
+        this.allitemsList.push(item);
+      })
+      //console.log("Alll : ",this.allitemsList);
+      this.distributeData();
+    });
+
     console.log("selected categories : ",this.categoryList);
-    this.distributeData(posService);
     console.log('appComponent:#screen data map : ',this.screendata_map);
 
-    this.getItemsCount(posService,10296);
-    this.getCategoryItems_cp(posService,10296);
   }
  
-  distributeData(posService){
+  distributeData(){
     var cflag=0;//category flag
     var iflag=0;//item flag
     var sflag=true;//space flag
@@ -48,9 +57,9 @@ export class AppComponent{
         sflag=true;
         while(sflag){ 
           cat_id=this.getCategoryId(cflag);
-          cat_items= this.getCategoryItems(posService,cat_id);
+          cat_items= this.getCategoryItems(cat_id);
           item_count=cat_items.length;
-          console.log("appComponent:catitemcount,iflag",item_count,cat_items);
+          console.log("distribute data:catitemcount,iflag",item_count,cat_items);
           
           if((item_count-iflag)<maxrows){//less than screen size
             display_count=iflag+(item_count-iflag)
@@ -79,6 +88,7 @@ export class AppComponent{
         //media
       }
     });
+    console.log("distribute data map :",this.screendata_map);
   }
 
   getCategoryId(cflag){
@@ -87,18 +97,20 @@ export class AppComponent{
     return id;
   }
 
-  getCategoryItems(posService,cat_id){
-    var itemlist=[];
-    posService.getProductsForCategory(cat_id).subscribe((ilist:any[]) =>{
-      itemlist=ilist;
+  getCategoryItems(cat_id){
+    var categoryitems=[];
+    this.allitemsList.forEach(element => {
+      if(element.categoryId==cat_id){
+        categoryitems.push(element);
+      }
     });
-    console.log("#appcompponent:items for given category:",itemlist);
-    return itemlist;
+    console.log("distribute data:items for category",categoryitems);
+    return categoryitems;
   }
 
-  getItemsCount(posService,cat_id){
+  getItemsCount(cat_id){
     var cnt=[];
-    posService.getCountForCategory(cat_id).subscribe((c) =>{
+    this.posService.getCountForCategory(cat_id).subscribe((c) =>{
       cnt=c;
     });
     console.log("#appcompponent:count for given category:",cnt);
@@ -114,16 +126,11 @@ export class AppComponent{
     this.screendata_map.set(scrn_id,content);
   }
 
-  roleData;
-  getCategoryItems_cp(posService,cat_id){
-    console.log("allitemslist",this.allitemsList);
-
-    posService.getAllProducts().subscribe(data => {
-      this.roleData = data;
-      console.log("data['data']",data);
-      console.log("roleData",this.roleData);
-    });
+  ngOnDestroy() {
+    this.destroy$.next(true);
+    this.destroy$.unsubscribe();
   }
+  
 }
 
 
