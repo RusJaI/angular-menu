@@ -35,7 +35,7 @@ export class AppComponent implements OnDestroy{
       arr.forEach(item=>{
         this.allitemsList.push(item);
       })
-      //console.log("Alll : ",this.allitemsList);
+      console.log("Alll : ",this.allitemsList);
       this.distributeData();
     });
 

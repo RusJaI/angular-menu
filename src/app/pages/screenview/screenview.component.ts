@@ -57,7 +57,9 @@ export class ScreenviewComponent implements OnInit{
         this.screenwidth=this.aspectratio*600;
         this.screenwidth=this.screenwidth+"px";
       }
-      var productdata=this.screendata_map.get(this.screen_id)
+      var productdata=this.screendata_map;
+      console.log("in screen view : ",productdata);
+      
      // this.product_id=productdata['productId'];
       //this.product_name=productdata.productName;
       console.log("#screenview:table dimensions : ",this.screenheight,this.screenwidth);
