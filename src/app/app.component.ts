@@ -30,7 +30,7 @@ export class AppComponent implements OnDestroy{
     });
     
     //this.allitemsList=posService.allitems_arr;
-     this.posService.getAllProductsRequest().pipe(takeUntil(this.destroy$)).subscribe((items:any) => {
+/*     this.posService.getAllProductsRequest().pipe(takeUntil(this.destroy$)).subscribe((items:any) => {
       var arr=this.posService.processJson(items);
       arr.forEach(item=>{
         this.allitemsList.push(item);
@@ -41,7 +41,7 @@ export class AppComponent implements OnDestroy{
 
     console.log("selected categories : ",this.categoryList);
     console.log('appComponent:#screen data map : ',this.screendata_map);
-
+*/
   }
  
   distributeData(){

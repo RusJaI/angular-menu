@@ -14,19 +14,27 @@
 
 <!--table [style.backgroundColor]="backgroundcolor" [style.td.color]="textcolor" [style.width]="screenwidth"-->
 <table #screen [style.backgroundColor]="backgroundcolor" [style.color]="textcolor" [style.width]="screenwidth" [style.height]="screenheight">
+
+  <div *ngIf="screentype=='menu'; else elseBlock">
     <tr>
-    <th>Product</th>
-    <th>Unit Price</th>
-    <th>Price</th>
-  </tr>
-  <ng-container *ngFor="let dta of content">
+      <th>Product</th>
+      <th>Unit Price</th>
+      <th>Price</th>
+    </tr>
+  <ng-container *ngFor="let dta of itemsforthisscreen">
   <tr>
     <td>{{dta.productName}}</td>
-    <td>{{dta.unitPrice}}</td>
-    <td>{{dta.price}}</td>
+    <td>{{dta.tags}}</td>
+    <td>{{dta.category}}</td>
     <!--td>{{tablestyle.bgcolor}}</td-->
   </tr>
   </ng-container>
+  </div>
+  <ng-template #elseBlock>
+    <div style="text-align: center;">
+     <img src="https://picsum.photos/200/250?grayscale" width="imagewidth" />
+    </div>
+  </ng-template>
 
 </table>
 
