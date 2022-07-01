@@ -1,4 +1,5 @@
 <head>
+  <link rel="stylesheet" href="https://use.typekit.net/oov2wcw.css">
   <script type="text/javascript" src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js"></script>
 </head>
 
@@ -13,26 +14,29 @@
 </button>
 
 <!--table [style.backgroundColor]="backgroundcolor" [style.td.color]="textcolor" [style.width]="screenwidth"-->
-<table #screen [style.backgroundColor]="backgroundcolor" [style.color]="textcolor" [style.width]="screenwidth" [style.height]="screenheight">
+<table class="tk-century-gothic" #screen [style.backgroundColor]="backgroundcolor" [style.color]="textcolor" [style.width]="screenwidth" [style.height]="screenheight">
 
-  <div *ngIf="screentype=='menu'; else elseBlock">
-    <tr>
-      <th>Product</th>
-      <th>Unit Price</th>
-      <th>Price</th>
+  <div *ngIf="screentype=='Menu'; else elseBlock">
+  <ng-container *ngFor="let dta of itemsforthisscreen" >
+    <div #data [current_catg]="dta.category"></div>
+
+    <tr  *ngIf="previous_catg!=current_catg;">
+      <th class="tk-century-gothic" style="font-size:40.83px;font-weight:100.66">{{previous_catg}}</th>
+      <th>Unit Price {{previous_catg}}</th>
+      <th>Price {{current_catg}}</th>
     </tr>
-  <ng-container *ngFor="let dta of itemsforthisscreen">
+
   <tr>
-    <td>{{dta.productName}}</td>
-    <td>{{dta.tags}}</td>
-    <td>{{dta.category}}</td>
+    <td class="tk-century-gothic">{{dta.productName}}</td>
+    <td class="tk-century-gothic">{{dta.tags}}</td>
+    <td class="tk-century-gothic">{{dta.category}}</td>
     <!--td>{{tablestyle.bgcolor}}</td-->
   </tr>
   </ng-container>
   </div>
   <ng-template #elseBlock>
     <div style="text-align: center;">
-     <img src="https://picsum.photos/200/250?grayscale" width="imagewidth" />
+     <img class="bg" [src]="displayimage" [style.width]="imagewidth" >
     </div>
   </ng-template>
 

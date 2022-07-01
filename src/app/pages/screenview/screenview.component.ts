@@ -25,6 +25,7 @@ export class ScreenviewComponent implements OnInit{
   screen_id;
   screenheight;
   screentype;
+  displayimage;
   imagewidth
   
   product_id;
@@ -32,6 +33,8 @@ export class ScreenviewComponent implements OnInit{
   productsList:any[]=[];
   content:any[];
   imgBase64:any='';
+  previous_catg;
+  current_catg
   
   screen_list :ScreenModel []=[]
   categoryList:any[]=[];
@@ -42,24 +45,42 @@ export class ScreenviewComponent implements OnInit{
 
   @Input() tablestyle:any;
   constructor(private screenService:ScreenserviceService,private posService:PosserviceService,private route: ActivatedRoute,private captureService:NgxCaptureService,private httpclient: HttpClient) { 
-    screenService.getScreens().subscribe((scrn:ScreenModel[]) =>{
+   /* screenService.getScreens().subscribe((scrn:ScreenModel[]) =>{
       this.screen_list=scrn;
+    });*/
+  
+    
+    screenService.getScreens().pipe().subscribe((scrn) =>{
+      var screens=[];
+      screens=posService.processDjangoJson(scrn);
+      screens.forEach(s=>{
+        this.screen_list.push(s);
+      })
+    }); 
+
+    posService.getSelectedCategories().pipe().subscribe((ctg:any) =>{
+      var selectedcategories=[];
+      //console.log("selected list : ",catg);
+      selectedcategories=this.posService.processDjangoJson(ctg);
+      selectedcategories.forEach(item=>{
+        this.categoryList.push(item);
+      });
+      console.log("selected list : ",this.categoryList);
     });
 
-    posService.getSelectedCategories().subscribe((ctg:any[]) =>{
-      this.categoryList=ctg;
-    });
-    
     this.posService.getAllProductsRequest().pipe().subscribe((items:any) => {
       var arr=this.posService.processJson(items);
       arr.forEach(item=>{
         this.allitemsList.push(item);
       })
+    
       console.log("Alll : ",this.allitemsList);
       this.distributeData();
       
-      this.itemsforthisscreen=this.screendata_map.get(this.tablestyle.id);
-      console.log("map : ",this.itemsforthisscreen);
+      this.itemsforthisscreen=this.screendata_map.get(this.tablestyle.tv_id);
+      this.previous_catg=this.screendata_map.get(this.tablestyle.tv_id)[0]?.category;
+      this.current_catg=""
+      console.log("map : ",this.previous_catg,this.itemsforthisscreen);
     });
    }
 
@@ -68,29 +89,32 @@ export class ScreenviewComponent implements OnInit{
     await this.route.paramMap.subscribe( params =>{
       //this.tablestyle=params.get('tablestyle');
       console.log("screenview:tablestyle",this.tablestyle);
-      this.screen_id=this.tablestyle.id;
-      this.backgroundcolor=this.tablestyle.bgcolor;
+      this.screen_id=this.tablestyle.tv_id;
+      this.backgroundcolor=this.tablestyle.screen_bgcolor;
       if(this.backgroundcolor=="white"){
         this.textcolor="black";
       }else{
         this.textcolor="white";
       }
-      this.screenwidth=600;
+      this.screenwidth=609.5;
       this.aspectratio=this.tablestyle.screen_height/this.tablestyle.screen_width;
-      this.screenheight=this.aspectratio*600;
-      this.screenheight=this.screenheight+"px";
+      this.screenheight=this.aspectratio*609.5;
+      
 
       if(this.tablestyle.screen_height>this.tablestyle.screen_width){
-        this.screenheight=600;
+        this.screenheight=609.5;
         this.aspectratio=this.tablestyle.screen_width/this.tablestyle.screen_height;
-        this.screenwidth=this.aspectratio*600;
-        this.screenwidth=this.screenwidth+"px";
+        this.screenwidth=this.aspectratio*609.5;
+        
       }
-      this.screentype=this.tablestyle.type;
-     // this.product_id=productdata['productId'];
-      //this.product_name=productdata.productName;
+      this.screentype=this.tablestyle.content_type;
+      this.displayimage="../../../../../pos/media/"+this.tablestyle.media_file;
+
       console.log("#screenview:table dimensions : ",this.screenheight,this.screenwidth);
-      this.imagewidth=this.screenwidth*0.95;
+      this.imagewidth=this.screenwidth*0.85;
+      this.screenheight=this.screenheight+"px";
+      this.screenwidth=this.screenwidth+"px";
+      this.imagewidth=this.imagewidth+"px";
     }
    );
   }
@@ -98,7 +122,7 @@ export class ScreenviewComponent implements OnInit{
   buttonAction(){
     this.capture();
     console.log("button function");
-    new castContent(this.tablestyle.id+'');
+    new castContent(this.tablestyle.tv_id+'');
   }
 
   capture(){ 
@@ -124,7 +148,7 @@ export class ScreenviewComponent implements OnInit{
   saveFile() {
     const file = this.DataURIToBlob(this.imgBase64);
     //saveAs(file, '/assets/screens/hello.png');
-    var filename= `${this.tablestyle.id}.png`;
+    var filename= `${this.tablestyle.tv_id}.png`;
     saveAs(file, filename);
 
     let formData:FormData = new FormData();  
@@ -144,9 +168,9 @@ export class ScreenviewComponent implements OnInit{
     var maxrows=12;
     var cat_id,cat_items:any[]=[],item_count=0,display_count,ifflagged=false;
     this.screen_list.forEach(scrn=>{
-      console.log("In distribute data :",scrn.id);
-      if(scrn.type=="menu"){
-        console.log("In distribute data menu :",scrn.id);
+      console.log("In distribute data :",scrn.tv_id);
+      if(scrn.content_type=="Menu"){
+        console.log("In distribute data Menu :",scrn.tv_id);
         sflag=true;
         while(sflag){ 
           cat_id=this.getCategoryId(cflag);
@@ -156,19 +180,19 @@ export class ScreenviewComponent implements OnInit{
           
           if((item_count-iflag)<maxrows){//less than screen size
             display_count=iflag+(item_count-iflag)
-            this.setScreenDisplayContent(scrn.id,cat_items.slice(iflag,display_count));
+            this.setScreenDisplayContent(scrn.tv_id,cat_items.slice(iflag,display_count));
             cflag++;
             iflag=0;
             sflag=true;
           }else if((item_count-iflag)==maxrows){//fit to screen
             display_count=maxrows+iflag;
-            this.setScreenDisplayContent(scrn.id,cat_items.slice(iflag,display_count));
+            this.setScreenDisplayContent(scrn.tv_id,cat_items.slice(iflag,display_count));
             cflag++;
             iflag=0;
             sflag=false;
           }else if((item_count-iflag)>maxrows){//more than screen
             display_count=maxrows+iflag;
-            this.setScreenDisplayContent(scrn.id,cat_items.slice(iflag,display_count));
+            this.setScreenDisplayContent(scrn.tv_id,cat_items.slice(iflag,display_count));
             iflag+=maxrows;
             sflag=false;
           }
@@ -185,7 +209,7 @@ export class ScreenviewComponent implements OnInit{
   }
 
   getCategoryId(cflag){
-    var id= this.categoryList[cflag].productCategoryId;
+    var id= this.categoryList[cflag].Category;
     console.log("appComponents:getCategoryId() :",id);
     return id;
   }
@@ -211,12 +235,12 @@ export class ScreenviewComponent implements OnInit{
   }
 
   ifCategoryFlagged(cflag: number): boolean {
-    var res=this.categoryList[cflag].flagged;
+    var res=this.categoryList[cflag].Flag;
     return res;
   }
 
-  setScreenDisplayContent(scrn_id,content:any[]) {
-    this.screendata_map.set(scrn_id,content);
+  setScreenDisplayContent(tv_id,content:any[]) {
+    this.screendata_map.set(tv_id,content);
   }
 
 }
