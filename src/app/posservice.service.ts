@@ -42,7 +42,7 @@ processDjangoJson(respstring){
 	processed=processed.replace(/}/g,'},');
 	processed=processed.slice(0,-1);
 	processed='['+processed+']';
-	console.log("step5 : ",processed);
+	//console.log("step5 : ",processed);
 	var itemarr=JSON.parse(processed);
 	//var itemarr=this.temparr;
 	return itemarr;
@@ -57,6 +57,7 @@ processJson(allitems){
   processed='['+processed+']';
   //console.log("Processed",(processed));
   var itemarr=JSON.parse(processed);
+  //var itemarr=this.temparr;
   return itemarr;
 }
 getAllProducts(){

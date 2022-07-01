@@ -8,6 +8,7 @@ table {
 }
 
 th {
+  color: textcolor;
   font-family:'Century Gothic';
   border: 0px solid transparent;
   text-align: left;

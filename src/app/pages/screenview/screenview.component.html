@@ -18,12 +18,10 @@
 
   <div *ngIf="screentype=='Menu'; else elseBlock">
   <ng-container *ngFor="let dta of itemsforthisscreen" >
-    <div #data [current_catg]="dta.category"></div>
-
-    <tr  *ngIf="previous_catg!=current_catg;">
-      <th class="tk-century-gothic" style="font-size:40.83px;font-weight:100.66">{{previous_catg}}</th>
-      <th>Unit Price {{previous_catg}}</th>
-      <th>Price {{current_catg}}</th>
+    <tr  *ngIf="ifcatgchanged">
+      <th class="tk-century-gothic" style="font-size:40.83px;font-weight:100.66">{{getFromCharCode(dta.category)}}</th>
+      <th>Unit Price</th>  
+      <th>Price</th>
     </tr>
 
   <tr>
@@ -32,6 +30,7 @@
     <td class="tk-century-gothic">{{dta.category}}</td>
     <!--td>{{tablestyle.bgcolor}}</td-->
   </tr>
+ {{setCatg(dta.category)}}
   </ng-container>
   </div>
   <ng-template #elseBlock>

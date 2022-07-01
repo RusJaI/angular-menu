@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { bindCallback } from 'rxjs';
 import { PosserviceService } from 'src/app/posservice.service';
@@ -12,7 +12,7 @@ declare var start: any,castContent:any;
 @Component({
   selector: 'app-screenview',
   templateUrl: './screenview.component.html',
-  styleUrls: ['./screenview.component.css']
+  styleUrls: ['./screenview.component.css'],
 })
 
 
@@ -34,7 +34,8 @@ export class ScreenviewComponent implements OnInit{
   content:any[];
   imgBase64:any='';
   previous_catg;
-  current_catg
+  current_catg;
+  ifcatgchanged=true;
   
   screen_list :ScreenModel []=[]
   categoryList:any[]=[];
@@ -44,12 +45,11 @@ export class ScreenviewComponent implements OnInit{
   itemsforthisscreen=[];
 
   @Input() tablestyle:any;
-  constructor(private screenService:ScreenserviceService,private posService:PosserviceService,private route: ActivatedRoute,private captureService:NgxCaptureService,private httpclient: HttpClient) { 
+  constructor(private ref: ChangeDetectorRef,private screenService:ScreenserviceService,private posService:PosserviceService,private route: ActivatedRoute,private captureService:NgxCaptureService,private httpclient: HttpClient) { 
    /* screenService.getScreens().subscribe((scrn:ScreenModel[]) =>{
       this.screen_list=scrn;
     });*/
   
-    
     screenService.getScreens().pipe().subscribe((scrn) =>{
       var screens=[];
       screens=posService.processDjangoJson(scrn);
@@ -91,11 +91,13 @@ export class ScreenviewComponent implements OnInit{
       console.log("screenview:tablestyle",this.tablestyle);
       this.screen_id=this.tablestyle.tv_id;
       this.backgroundcolor=this.tablestyle.screen_bgcolor;
-      if(this.backgroundcolor=="white"){
+      if(this.backgroundcolor=="White"){
         this.textcolor="black";
       }else{
         this.textcolor="white";
       }
+      console.log("text color : ",this.backgroundcolor,this.textcolor);
+      
       this.screenwidth=609.5;
       this.aspectratio=this.tablestyle.screen_height/this.tablestyle.screen_width;
       this.screenheight=this.aspectratio*609.5;
@@ -119,6 +121,30 @@ export class ScreenviewComponent implements OnInit{
    );
   }
 
+  enabled = true;  
+  cnt=0;
+  getFromCharCode(datacatg) {
+    //this.current_catg=datacatg;
+    console.log("category  data: ",datacatg,"current :", this.current_catg,"previous: ",this.previous_catg);
+   // return this.current_catg;
+
+   if(this.cnt%2==0){
+    this.ref.detach();
+   }else{
+    this.ref.reattach();
+   }
+   this.cnt++;
+   return datacatg;
+  }
+
+  setCatg(datacatg){
+    this.current_catg=datacatg;
+    if(this.current_catg==this.previous_catg){
+      this.ifcatgchanged=false;
+    }
+  }
+
+ 
   buttonAction(){
     this.capture();
     console.log("button function");
@@ -166,13 +192,17 @@ export class ScreenviewComponent implements OnInit{
     var iflag=0;//item flag
     var sflag=true;//space flag
     var maxrows=12;
+    var selectedcatg_count=this.categoryList.length;
     var cat_id,cat_items:any[]=[],item_count=0,display_count,ifflagged=false;
     this.screen_list.forEach(scrn=>{
       console.log("In distribute data :",scrn.tv_id);
       if(scrn.content_type=="Menu"){
         console.log("In distribute data Menu :",scrn.tv_id);
         sflag=true;
-        while(sflag){ 
+        while(sflag){
+          if(cflag==selectedcatg_count) {
+            break;
+          }
           cat_id=this.getCategoryId(cflag);
           cat_items= this.getCategoryItems(cat_id);
           item_count=cat_items.length;
@@ -221,7 +251,7 @@ export class ScreenviewComponent implements OnInit{
         categoryitems.push(element);
       }
     });
-    console.log("distribute data:items for category",categoryitems);
+    console.log("distribute data:items for category ",cat_id," :",categoryitems);
     return categoryitems;
   }
 
@@ -235,8 +265,12 @@ export class ScreenviewComponent implements OnInit{
   }
 
   ifCategoryFlagged(cflag: number): boolean {
-    var res=this.categoryList[cflag].Flag;
-    return res;
+    var res=this.categoryList[cflag]?.Flag;
+    if(res=='True'){
+      return true;
+    }else{
+      return false;
+    }
   }
 
   setScreenDisplayContent(tv_id,content:any[]) {
