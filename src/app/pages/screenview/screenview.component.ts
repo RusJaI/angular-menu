@@ -33,9 +33,10 @@ export class ScreenviewComponent implements OnInit{
   productsList:any[]=[];
   content:any[];
   imgBase64:any='';
-  previous_catg;
+  previous_catg="none";
   current_catg;
   ifcatgchanged=true;
+  is_firstrow_belongs_to_new_catg=true;
   
   screen_list :ScreenModel []=[]
   categoryList:any[]=[];
@@ -43,6 +44,8 @@ export class ScreenviewComponent implements OnInit{
   currentYear = new Date().getFullYear();
   allitemsList=[];
   itemsforthisscreen=[];
+
+  widthsclae=600;
 
   @Input() tablestyle:any;
   constructor(private ref: ChangeDetectorRef,private screenService:ScreenserviceService,private posService:PosserviceService,private route: ActivatedRoute,private captureService:NgxCaptureService,private httpclient: HttpClient) { 
@@ -78,9 +81,7 @@ export class ScreenviewComponent implements OnInit{
       this.distributeData();
       
       this.itemsforthisscreen=this.screendata_map.get(this.tablestyle.tv_id);
-      this.previous_catg=this.screendata_map.get(this.tablestyle.tv_id)[0]?.category;
-      this.current_catg=""
-      console.log("map : ",this.previous_catg,this.itemsforthisscreen);
+      this.checkIfVeryFirstItemForCategory();
     });
    }
 
@@ -98,15 +99,15 @@ export class ScreenviewComponent implements OnInit{
       }
       console.log("text color : ",this.backgroundcolor,this.textcolor);
       
-      this.screenwidth=609.5;
+      this.screenwidth=this.widthsclae;
       this.aspectratio=this.tablestyle.screen_height/this.tablestyle.screen_width;
-      this.screenheight=this.aspectratio*609.5;
+      this.screenheight=this.aspectratio*this.widthsclae;
       
 
       if(this.tablestyle.screen_height>this.tablestyle.screen_width){
-        this.screenheight=609.5;
+        this.screenheight=this.widthsclae;
         this.aspectratio=this.tablestyle.screen_width/this.tablestyle.screen_height;
-        this.screenwidth=this.aspectratio*609.5;
+        this.screenwidth=this.aspectratio*this.widthsclae;
         
       }
       this.screentype=this.tablestyle.content_type;
@@ -125,8 +126,9 @@ export class ScreenviewComponent implements OnInit{
   cnt=0;
   getFromCharCode(datacatg) {
     //this.current_catg=datacatg;
-    console.log("category  data: ",datacatg,"current :", this.current_catg,"previous: ",this.previous_catg);
+    console.log("category view : screen , previous , current ",this.tablestyle.tv_id,this.previous_catg,this.current_catg);
    // return this.current_catg;
+    this.previous_catg=this.current_catg;
 
    if(this.cnt%2==0){
     this.ref.detach();
@@ -137,11 +139,16 @@ export class ScreenviewComponent implements OnInit{
    return datacatg;
   }
 
+  initialcnt=0;
   setCatg(datacatg){
+    console.log("set category : ",this.tablestyle.tv_id,this.previous_catg,this.current_catg);
     this.current_catg=datacatg;
     if(this.current_catg==this.previous_catg){
       this.ifcatgchanged=false;
+    }else{
+      this.ifcatgchanged=true;
     }
+
   }
 
  
@@ -193,41 +200,47 @@ export class ScreenviewComponent implements OnInit{
     var sflag=true;//space flag
     var maxrows=12;
     var selectedcatg_count=this.categoryList.length;
-    var cat_id,cat_items:any[]=[],item_count=0,display_count,ifflagged=false;
+    var cat_id,cat_items:any[]=[],item_count=0,display_limit,ifflagged=false,prevbalance;
     this.screen_list.forEach(scrn=>{
       console.log("In distribute data :",scrn.tv_id);
       if(scrn.content_type=="Menu"){
         console.log("In distribute data Menu :",scrn.tv_id);
         sflag=true;
+        prevbalance=0;
         while(sflag){
           if(cflag==selectedcatg_count) {
             break;
           }
           cat_id=this.getCategoryId(cflag);
           cat_items= this.getCategoryItems(cat_id);
-          item_count=cat_items.length;
+          item_count=cat_items.length+prevbalance;
           console.log("distribute data:catitemcount,iflag",item_count,cat_items);
           
           if((item_count-iflag)<maxrows){//less than screen size
-            display_count=iflag+(item_count-iflag)
-            this.setScreenDisplayContent(scrn.tv_id,cat_items.slice(iflag,display_count));
+            display_limit=item_count;
+            console.log("before receive : ",iflag," : ",display_limit);
+            
+            this.setScreenDisplayContent(scrn.tv_id,cat_items.slice(iflag,display_limit));
+            prevbalance=display_limit-iflag
             cflag++;
             iflag=0;
             sflag=true;
           }else if((item_count-iflag)==maxrows){//fit to screen
-            display_count=maxrows+iflag;
-            this.setScreenDisplayContent(scrn.tv_id,cat_items.slice(iflag,display_count));
+            display_limit=maxrows+iflag;
+            this.setScreenDisplayContent(scrn.tv_id,cat_items.slice(iflag,display_limit));
             cflag++;
             iflag=0;
             sflag=false;
+            prevbalance=0;
           }else if((item_count-iflag)>maxrows){//more than screen
-            display_count=maxrows+iflag;
-            this.setScreenDisplayContent(scrn.tv_id,cat_items.slice(iflag,display_count));
-            iflag+=maxrows;
+            display_limit=maxrows+iflag-prevbalance;
+            this.setScreenDisplayContent(scrn.tv_id,cat_items.slice(iflag,display_limit));
+            iflag=display_limit;
             sflag=false;
+            prevbalance=0;
           }
           ifflagged=this.ifCategoryFlagged(cflag);
-          if(ifflagged){
+          if(ifflagged && cflag!=0){
             sflag=false;
           }
         }
@@ -251,6 +264,7 @@ export class ScreenviewComponent implements OnInit{
         categoryitems.push(element);
       }
     });
+    categoryitems.sort((a,b) => a.productName.localeCompare(b.productName));
     console.log("distribute data:items for category ",cat_id," :",categoryitems);
     return categoryitems;
   }
@@ -274,7 +288,44 @@ export class ScreenviewComponent implements OnInit{
   }
 
   setScreenDisplayContent(tv_id,content:any[]) {
-    this.screendata_map.set(tv_id,content);
+    console.log("Received : ",tv_id," data :",content);
+    
+    var cntent=[];
+    if(this.screendata_map.has(tv_id)){
+      cntent=this.screendata_map.get(tv_id);
+    }
+    cntent = [ ...cntent, ...content];
+    console.log("content : ",cntent);
+    
+    this.screendata_map.set(tv_id,cntent);
   }
 
+  checkIfVeryFirstItemForCategory(){
+    var numscreens=this.screen_list.length;
+    var myscreenid=this.tablestyle.tv_id;
+    var prevscreenid;
+    var prevscreencontent=[];
+    if(this.screen_list[0]?.tv_id==myscreenid){
+      this.is_firstrow_belongs_to_new_catg=true;
+    }else{
+      var indexformyscreen;
+      for(var i=0;i<numscreens;i++){
+        if(this.screen_list[i].tv_id==myscreenid){
+          indexformyscreen=i;
+          break;
+        }
+      }
+      prevscreenid=this.screen_list[indexformyscreen-1].tv_id;
+      var firstcatgofmyscreen=this.screendata_map.get(myscreenid)[0].categoryId;
+      prevscreencontent=this.screendata_map.get(prevscreenid);
+      var lastcatgofprevscreen=prevscreencontent[prevscreencontent.length-1].categoryId;
+      console.log("reveal -- :",firstcatgofmyscreen,lastcatgofprevscreen);
+      if(firstcatgofmyscreen==lastcatgofprevscreen){
+        this.is_firstrow_belongs_to_new_catg=false;
+      }else{
+        this.is_firstrow_belongs_to_new_catg=true;
+      }
+    }
+    console.log(" is first row ",this.tablestyle.tv_id,this.is_firstrow_belongs_to_new_catg);
+  }
 }

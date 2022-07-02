@@ -12,19 +12,38 @@ th {
   font-family:'Century Gothic';
   border: 0px solid transparent;
   text-align: left;
-  padding: 8px;
+  padding-left: 8px;
+  padding-right: 8px;
 }
 
 @import url("https://p.typekit.net/p.css?s=1&k=oov2wcw&ht=tk&f=39203&a=85994746&app=typekit&e=css");
+
+td.greendot{
+  overflow: hidden;
+  width: 10px;
+  padding-left: 8px;
+  padding-right: 8px;
+}
 
 td {
   @font-face {
     font-family:"century-gothic";
     src:url("https://use.typekit.net/af/afc5c6/00000000000000003b9b1f23/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3") format("woff2"),url("https://use.typekit.net/af/afc5c6/00000000000000003b9b1f23/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3") format("woff"),url("https://use.typekit.net/af/afc5c6/00000000000000003b9b1f23/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3") format("opentype");
-    font-display:auto;font-style:normal;font-weight:400;font-stretch:normal;
+    font-display:auto;font-style:normal;font-stretch:normal;
   }
   border: 0px solid transparent;
   text-align: left;
-  padding: 8px;
+  padding-left: 8px;
+  padding-right: 8px;
 }
 .tk-century-gothic { font-family: "century-gothic",sans-serif; }
+.firstrow{ font-size: 18px;font-weight:50;}
+.secondrow{ font-size: 10px;font-weight:20;padding-bottom: 2px;}
+
+img.bg{
+  display: block;
+  margin: 0 auto;
+  padding-top: 10%;
+  padding-bottom: 10%;
+  align-content: center;
+}

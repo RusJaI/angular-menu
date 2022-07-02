@@ -18,19 +18,28 @@
 
   <div *ngIf="screentype=='Menu'; else elseBlock">
   <ng-container *ngFor="let dta of itemsforthisscreen" >
+    {{setCatg(dta.category)}}
     <tr  *ngIf="ifcatgchanged">
-      <th class="tk-century-gothic" style="font-size:40.83px;font-weight:100.66">{{getFromCharCode(dta.category)}}</th>
-      <th>Unit Price</th>  
-      <th>Price</th>
+      <th></th>
+      <th class="tk-century-gothic" style="width: 200px; font-size:40.83px;font-weight:200">{{getFromCharCode(dta.category)}}</th>
+      <th>1g</th>  
+      <th>1/8 oz</th>
     </tr>
 
   <tr>
-    <td class="tk-century-gothic">{{dta.productName}}</td>
-    <td class="tk-century-gothic">{{dta.tags}}</td>
-    <td class="tk-century-gothic">{{dta.category}}</td>
+    <td class="greendot">🟢</td>
+    <td class="tk-century-gothic firstrow" style="width: 200px;">{{dta.productName}}</td>
+    <td class="tk-century-gothic firstrow">{{dta.price}}</td>
+    <td class="tk-century-gothic firstrow">{{dta.productGrams*dta.price}}</td>
     <!--td>{{tablestyle.bgcolor}}</td-->
   </tr>
- {{setCatg(dta.category)}}
+  <table>
+  <tr>
+    <td class="tk-century-gothic  secondrow">{{dta.producerName}}|</td>
+    <td class="tk-century-gothic secondrow">{{dta.thcContent}}|</td>
+    <td class="tk-century-gothic secondrow">{{dta.flavor}}|</td>
+  </tr>
+</table>
   </ng-container>
   </div>
   <ng-template #elseBlock>

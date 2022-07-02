@@ -21,11 +21,8 @@ export class AppComponent implements OnDestroy{
   destroy$: Subject<boolean> = new Subject<boolean>();
 
   constructor(private screenService:ScreenserviceService,private posService:PosserviceService){
-   /* screenService.getScreens().subscribe((scrn:ScreenModel[]) =>{
-      this.screen_list=scrn;
-    });*/
-    
-    screenService.getScreens().pipe().subscribe(scrn=>{
+
+    screenService.getScreens().pipe(takeUntil(this.destroy$)).subscribe(scrn=>{
       var screens=[];
       screens=posService.processDjangoJson(scrn);
       screens.forEach(scr=>{
