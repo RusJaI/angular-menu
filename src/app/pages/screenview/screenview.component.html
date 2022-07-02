@@ -22,22 +22,25 @@
     <tr  *ngIf="ifcatgchanged">
       <th></th>
       <th class="tk-century-gothic" style="width: 200px; font-size:40.83px;font-weight:400px">{{getFromCharCode(dta.category)}}</th>
-      <th>1g</th>  
-      <th>1/8 oz</th>
+      <ng-container *ngFor="let gram of screengrams" >
+        <th style="width: 50px;">{{gram}}g</th>  
+      </ng-container>
     </tr>
 
   <tr>
     <td class="greendot">🟢</td>
     <td class="tk-century-gothic firstrow" style="width: 200px;">{{dta.productName}}</td>
-    <td class="tk-century-gothic firstrow">${{dta.price}}</td>
-    <td class="tk-century-gothic firstrow">${{dta.productGrams*dta.price}}</td>
+    <ng-container *ngFor="let gram of screengrams" >
+      <td class="tk-century-gothic firstrow" style="width: 50px;">{{getGramPrice(dta.productName,gram)}}</td>
+    </ng-container>
     <!--td>{{tablestyle.bgcolor}}</td-->
   </tr>
   <table>
   <tr>
     <td class="tk-century-gothic  secondrow">{{dta.vendorName}}|</td>
     <td class="tk-century-gothic secondrow">{{dta.thcContent}}|</td>
-    <td class="tk-century-gothic secondrow">{{dta.flavor}}|</td>
+    <td class="tk-century-gothic secondrow">{{dta.flavor}}</td>
+    <td class="tk-century-gothic secondrow">{{getTag(dta.productName)}}|</td>
   </tr>
 </table>
   </ng-container>

@@ -44,9 +44,10 @@ export class ScreenviewComponent implements OnInit{
   currentYear = new Date().getFullYear();
   allitemsList=[];
   itemsforthisscreen=[];
-
+  screengrams=[];
   widthsclae=600;
-
+  gramMap=new Map();
+  tagMap=new Map();
   @Input() tablestyle:any;
   constructor(private ref: ChangeDetectorRef,private screenService:ScreenserviceService,private posService:PosserviceService,private route: ActivatedRoute,private captureService:NgxCaptureService,private httpclient: HttpClient) { 
    /* screenService.getScreens().subscribe((scrn:ScreenModel[]) =>{
@@ -78,9 +79,14 @@ export class ScreenviewComponent implements OnInit{
       })
     
       console.log("Alll : ",this.allitemsList);
+      this.getGramMap();
+      this.setTagMap();
       this.distributeData();
       
       this.itemsforthisscreen=this.screendata_map.get(this.tablestyle.tv_id);
+      this.screengrams=this.getscreengramsList();
+      console.log("screen grams : ",this.screengrams);
+      
       this.checkIfVeryFirstItemForCategory();
     });
    }
@@ -151,6 +157,18 @@ export class ScreenviewComponent implements OnInit{
 
   }
 
+  getscreengramsList(){
+    var screenitems=this.screendata_map.get(this.tablestyle.tv_id);
+   // console.log("grams each ",screenitems);
+    var grmas=[],tempforitem=[];
+    var gramstring;
+    screenitems?.forEach(item=>{
+      gramstring=item.productGrams;
+      tempforitem=gramstring.split(',');
+      grmas = [ ...tempforitem, ...grmas];
+    })
+    return  [...new Set(grmas)];
+  }
  
   buttonAction(){
     this.capture();
@@ -257,16 +275,95 @@ export class ScreenviewComponent implements OnInit{
     return id;
   }
 
+  getGramMap(){
+    this.allitemsList.forEach(item=>{//all items list have just one gram value
+      var itemname=item.productName;
+      var prodgram=item.productGrams;
+      var price=item.price;
+      var submap=new Map();
+      var existingsubmap=new Map();
+      submap.set(prodgram,price);
+      if(this.gramMap.has(itemname)){
+        existingsubmap=this.gramMap.get(itemname);
+        existingsubmap.set(prodgram,price);
+        this.gramMap.set(itemname,existingsubmap);
+      }else{
+        this.gramMap.set(itemname,submap);
+      }
+    })
+    console.log("gram map : ",this.gramMap);
+    
+  }
+
+  setTagMap(){
+    this.allitemsList.forEach(item=>{//all items list have just one gram value
+      var itemname=item.productName;
+      var prodtags=item.tags;
+      this.tagMap.set(itemname,prodtags);
+    })
+    console.log("tag map : ",this.tagMap); 
+  }
+
+  getTag(prodname){
+    var tagstring="";
+    var tagarr=[];
+    if(this.tagMap.has(prodname)){
+      tagarr=this.tagMap.get(prodname);
+      if(typeof(tagarr)=="string"){
+        tagarr=[];
+      }
+      console.log("tag arr view: ",tagarr);
+      
+      tagarr.forEach(t=>{
+        tagstring=tagstring+" | "+t.tagName;
+      })
+    }else{
+    }
+    return tagstring;
+  }
   getCategoryItems(cat_id){
     var categoryitems=[];
-    this.allitemsList.forEach(element => {
+    var tempallitems=JSON.parse(JSON.stringify(this.allitemsList));
+    tempallitems.sort((a,b) => a.productName.localeCompare(b.productName));
+    var namelist=[];
+    tempallitems.forEach(element => {
       if(element.categoryId==cat_id){
-        categoryitems.push(element);
+        if(namelist.includes(element.productName)){
+          categoryitems.forEach(item=>{
+            if(item.productName==element.productName){//if product already in category list, append the product gram
+                item.productGrams=item.productGrams+","+element.productGrams;
+            }
+          })
+          console.log("duplicate : ",element.productName);
+          
+        }else{
+          element.productGrams=element.productGrams.toString();
+          categoryitems.push(element);
+          namelist.push(element.productName);
+        }
       }
     });
-    categoryitems.sort((a,b) => a.productName.localeCompare(b.productName));
     console.log("distribute data:items for category ",cat_id," :",categoryitems);
     return categoryitems;
+  }
+
+  getGramPrice(prodName,gram){
+    //console.log("go gram ",gram);
+    var tempmap=new Map();
+    var gramval;
+    if(this.gramMap.has(prodName)){
+      tempmap=this.gramMap.get(prodName);
+      gramval=parseFloat(gram);
+      console.log("go gram ",gram," ; ",tempmap.get(gramval));
+      if(tempmap.has(gramval)){
+        return tempmap.get(gramval)+"$";
+      }
+      else{
+        return '-';
+      }
+    }else{
+      return '-'
+    }
   }
 
   getItemsCount(cat_id){
