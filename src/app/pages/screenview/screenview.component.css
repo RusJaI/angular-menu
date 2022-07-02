@@ -37,8 +37,8 @@ td {
   padding-right: 8px;
 }
 .tk-century-gothic { font-family: "century-gothic",sans-serif; }
-.firstrow{ font-size: 18px;font-weight:50;}
-.secondrow{ font-size: 10px;font-weight:20;padding-bottom: 2px;}
+.firstrow{ font-size: 18px;font-weight:200;}
+.secondrow{ font-size: 10px;font-weight:20;padding-bottom: 2px;padding-left: 40px;}
 
 img.bg{
   display: block;
