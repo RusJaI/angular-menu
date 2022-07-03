@@ -31,45 +31,12 @@ export class AppComponent implements OnDestroy{
       console.log("real screens : ",this.screen_list);
     });
   
+    setInterval(()=>{window.location.reload();},300000);
   }
  
-  
-
-  getCategoryId(cflag){
-    var id= this.categoryList[cflag].productCategoryId;
-    console.log("appComponents:getCategoryId() :",id);
-    return id;
+  refreshPage(){
+    window.location.reload();
   }
-
-  getCategoryItems(cat_id){
-    var categoryitems=[];
-    this.allitemsList.forEach(element => {
-      if(element.categoryId==cat_id){
-        categoryitems.push(element);
-      }
-    });
-    console.log("distribute data:items for category",categoryitems);
-    return categoryitems;
-  }
-
-  getItemsCount(cat_id){
-    var cnt=[];
-    this.posService.getCountForCategory(cat_id).subscribe((c) =>{
-      cnt=c;
-    });
-    console.log("#appcompponent:count for given category:",cnt);
-    return cnt;
-  }
-
-  ifCategoryFlagged(cflag: number): boolean {
-    var res=this.categoryList[cflag].flagged;
-    return res;
-  }
-
-  setScreenDisplayContent(scrn_id,content:any[]) {
-    this.screendata_map.set(scrn_id,content);
-  }
-
   ngOnDestroy() {
     this.destroy$.next(true);
     this.destroy$.unsubscribe();

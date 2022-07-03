@@ -282,7 +282,7 @@ export class ScreenviewComponent implements OnInit{
       var price=item.price;
       var submap=new Map();
       var existingsubmap=new Map();
-      submap.set(prodgram,price);
+      submap.set(prodgram.toString(),price);
       if(this.gramMap.has(itemname)){
         existingsubmap=this.gramMap.get(itemname);
         existingsubmap.set(prodgram,price);
@@ -309,7 +309,7 @@ export class ScreenviewComponent implements OnInit{
     var tagarr=[];
     if(this.tagMap.has(prodname)){
       tagarr=this.tagMap.get(prodname);
-      if(typeof(tagarr)=="string"){
+      if(typeof(tagarr)=="string"||tagarr==null){
         tagarr=[];
       }
       console.log("tag arr view: ",tagarr);

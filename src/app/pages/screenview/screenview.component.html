@@ -20,7 +20,7 @@
   <ng-container *ngFor="let dta of itemsforthisscreen" >
     {{setCatg(dta.category)}}
     <tr  *ngIf="ifcatgchanged">
-      <th></th>
+      <th class="greendot"></th>
       <th class="tk-century-gothic" style="width: 200px; font-size:40.83px;font-weight:400px">{{getFromCharCode(dta.category)}}</th>
       <ng-container *ngFor="let gram of screengrams" >
         <th style="width: 50px;">{{gram}}g</th>  
@@ -36,7 +36,7 @@
     <!--td>{{tablestyle.bgcolor}}</td-->
   </tr>
   <table>
-  <tr>
+  <tr style="padding-left: 40px">
     <td class="tk-century-gothic  secondrow">{{dta.vendorName}}|</td>
     <td class="tk-century-gothic secondrow">{{dta.thcContent}}|</td>
     <td class="tk-century-gothic secondrow">{{dta.flavor}}</td>
