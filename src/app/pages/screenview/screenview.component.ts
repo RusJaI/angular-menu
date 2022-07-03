@@ -200,7 +200,7 @@ export class ScreenviewComponent implements OnInit{
     const file = this.DataURIToBlob(this.imgBase64);
     //saveAs(file, '/assets/screens/hello.png');
     var filename= `${this.tablestyle.tv_id}.png`;
-    saveAs(file, filename);
+    //saveAs(file, filename);
 
     let formData:FormData = new FormData();  
     formData.append("image", file);
