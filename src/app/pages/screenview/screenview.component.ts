@@ -200,7 +200,7 @@ export class ScreenviewComponent implements OnInit{
     const file = this.DataURIToBlob(this.imgBase64);
     //saveAs(file, '/assets/screens/hello.png');
     var filename= `${this.tablestyle.tv_id}.png`;
-    //saveAs(file, filename);
+    saveAs(file, filename);
 
     let formData:FormData = new FormData();  
     formData.append("image", file);
@@ -282,7 +282,7 @@ export class ScreenviewComponent implements OnInit{
       var price=item.price;
       var submap=new Map();
       var existingsubmap=new Map();
-      submap.set(prodgram.toString(),price);
+      submap.set(prodgram,price);
       if(this.gramMap.has(itemname)){
         existingsubmap=this.gramMap.get(itemname);
         existingsubmap.set(prodgram,price);
@@ -315,9 +315,12 @@ export class ScreenviewComponent implements OnInit{
       console.log("tag arr view: ",tagarr);
       
       tagarr.forEach(t=>{
-        tagstring=tagstring+" | "+t.tagName;
+        tagstring=tagstring+" , "+t.tagName;
       })
     }else{
+    }
+    if(tagstring!=""){
+      tagstring=tagstring.substring(2);
     }
     return tagstring;
   }
@@ -356,7 +359,7 @@ export class ScreenviewComponent implements OnInit{
       gramval=parseFloat(gram);
       console.log("go gram ",gram," ; ",tempmap.get(gramval));
       if(tempmap.has(gramval)){
-        return tempmap.get(gramval)+"$";
+        return "$"+tempmap.get(gramval);
       }
       else{
         return '-';
