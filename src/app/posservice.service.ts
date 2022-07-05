@@ -37,13 +37,14 @@ getAllProductsRequest() {
 }
 
 processDjangoJson(respstring){
+ /* console.log("received from django : ",respstring);
 	var processed= respstring.replace(/'/g, '"');
 	processed=processed.replace(/None/g, "\"\"");
 	processed=processed.replace(/}/g,'},');
 	processed=processed.slice(0,-1);
 	processed='['+processed+']';
-	//console.log("step5 : ",processed);
-	var itemarr=JSON.parse(processed);
+	console.log("step5 : ",processed);*/
+	var itemarr=JSON.parse(respstring);
 	//var itemarr=this.temparr;
 	return itemarr;
 }
