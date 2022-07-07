@@ -37,6 +37,7 @@ getAllProductsRequest() {
 }
 
 processDjangoJson(respstring){
+  console.log("received from django : ",respstring);
  /* console.log("received from django : ",respstring);
 	var processed= respstring.replace(/'/g, '"');
 	processed=processed.replace(/None/g, "\"\"");

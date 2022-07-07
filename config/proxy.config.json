@@ -1,7 +1,9 @@
 {
     "/pos/*": {
-        "target": "http://localhost:8000/",
-        "secure": false
+        "target": "https://menu-backend-tk6bjuxhlq-uc.a.run.app:443/",
+        "secure": false,
+        "logLevel": "debug",
+        "changeOrigin": true
     }
 }
 
