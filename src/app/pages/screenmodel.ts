@@ -1,10 +1,9 @@
 export class ScreenModel {
-    id: string
+    id: number
+    tv_id:string
+    content_type:string
     screen_width: number
     screen_height: number
-    bgcolor:string
-    orientation:string
-    type:string
-    content:any
+    screen_bgcolor:string
+    media_file:any
   }
-  

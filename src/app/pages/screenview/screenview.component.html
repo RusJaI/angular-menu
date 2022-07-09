@@ -1,8 +1,9 @@
 <head>
+  <link rel="stylesheet" href="https://use.typekit.net/oov2wcw.css">
   <script type="text/javascript" src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js"></script>
 </head>
 
-<body>
+<body style="background-color:transparent">
 
 <!--button class="button" onclick="btnAction()">Cast</button-->
 <script src="//www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
@@ -13,20 +14,42 @@
 </button>
 
 <!--table [style.backgroundColor]="backgroundcolor" [style.td.color]="textcolor" [style.width]="screenwidth"-->
-<table #screen [style.backgroundColor]="backgroundcolor" [style.color]="textcolor" [style.width]="screenwidth" [style.height]="screenheight">
-    <tr>
-    <th>Product</th>
-    <th>Unit Price</th>
-    <th>Price</th>
-  </tr>
-  <ng-container *ngFor="let dta of content">
+<table class="tk-century-gothic" #screen [style.backgroundColor]="backgroundcolor" [style.color]="textcolor" [style.width]="screenwidth" [style.height]="screenheight">
+
+  <div *ngIf="screentype=='Menu'; else elseBlock">
+  <ng-container *ngFor="let dta of itemsforthisscreen" >
+    {{setCatg(dta.category)}}
+    <tr  *ngIf="ifcatgchanged">
+      <th class="greendot"></th>
+      <th class="tk-century-gothic" style="width: 200px; font-size:40.83px;font-weight:400px">{{getFromCharCode(dta.category)}}</th>
+      <ng-container *ngFor="let gram of screengrams" >
+        <th style="width: 50px;">{{gram}}g</th>  
+      </ng-container>
+    </tr>
+
   <tr>
-    <td>{{dta.productName}}</td>
-    <td>{{dta.unitPrice}}</td>
-    <td>{{dta.price}}</td>
+    <td class="greendot">🟢</td>
+    <td class="tk-century-gothic firstrow" style="width: 200px;">{{dta.productName}}</td>
+    <ng-container *ngFor="let gram of screengrams" >
+      <td class="tk-century-gothic firstrow" style="width: 50px;">{{getGramPrice(dta.productName,gram)}}</td>
+    </ng-container>
     <!--td>{{tablestyle.bgcolor}}</td-->
   </tr>
+  <table>
+  <tr>
+    <td class="tk-century-gothic  secondrow" style="padding-left:32px;">{{dta.vendorName}} |</td>
+    <td class="tk-century-gothic secondrow"> {{dta.thcContent}}%thc |</td>
+    <td class="tk-century-gothic secondrow">{{dta.flavor}} |</td>
+    <td class="tk-century-gothic secondrow">{{getTag(dta.productName)}}</td>
+  </tr>
+</table>
   </ng-container>
+  </div>
+  <ng-template #elseBlock>
+    <div style="text-align: center;">
+     <img class="bg" [src]="displayimage" [style.width]="imagewidth" >
+    </div>
+  </ng-template>
 
 </table>
 
