@@ -42,9 +42,11 @@ function start(){
     //
     var mediaInfo = new chrome.cast.media.MediaInfo(
       /*"https://menubord-app.web.app/assets/screens/s005.PNG",
-      "image/PNG");*/
-      `https://menubord-app.web.app/assets/screens/${{screen_id}}.PNG`,
       "image/PNG");
+      `https://menubord-app.web.app/assets/screens/${{screen_id}}.PNG`,
+      "image/PNG"*/
+      "../screens/android008.png"
+      );
     var request = new chrome.cast.media.LoadRequest(mediaInfo);
     session.loadMedia(request, onMediaLoadSuccess, onError);
     session.setTimeout(17000);
@@ -62,7 +64,13 @@ function start(){
     }
   }
   
-  function castContent(sid) {
-    this.screen_id=sid;
+ /* function castContent() {
+    //this.screen_id=sid;
     chrome.cast.requestSession(onSessionRequestSuccess, onError);
-  }
+  }*/
+
+  window.castContent = function(screen_id) {
+    this.screen_id=screen_id;
+    console.log('X args', this.screen_id);
+    chrome.cast.requestSession(onSessionRequestSuccess, onError);
+}

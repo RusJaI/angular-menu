@@ -1,6 +1,6 @@
 {
     "/pos/*": {
-        "target": "https://menu-backend-tk6bjuxhlq-uc.a.run.app:443/",
+        "target": "http://127.0.0.1:8000/",
         "secure": false,
         "logLevel": "debug",
         "changeOrigin": true

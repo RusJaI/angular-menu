@@ -8,7 +8,9 @@ import { HttpClient } from '@angular/common/http';
 import { saveAs } from 'file-saver';
 import { ScreenserviceService } from 'src/app/screenservice.service';
 
-declare var start: any,castContent:any;
+declare var start: any;//,castContent:any;
+declare var castContent: (...args: any[]) => void;
+
 @Component({
   selector: 'app-screenview',
   templateUrl: './screenview.component.html',
@@ -171,9 +173,11 @@ export class ScreenviewComponent implements OnInit{
   }
  
   buttonAction(){
-    this.capture();
+   // this.capture();
     console.log("button function");
-    new castContent(this.tablestyle.tv_id+'');
+    new castContent(this.tablestyle.tv_id);
+    //X(this.tablestyle.tv_id);
+    //new castContent();
   }
 
   capture(){ 
@@ -198,9 +202,7 @@ export class ScreenviewComponent implements OnInit{
 
   saveFile() {
     const file = this.DataURIToBlob(this.imgBase64);
-    //saveAs(file, '/assets/screens/hello.png');
     var filename= `${this.tablestyle.tv_id}.png`;
-    //saveAs(file, filename);
 
     let formData:FormData = new FormData();  
     formData.append("image", file);
