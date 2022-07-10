@@ -42,11 +42,12 @@ function start(){
     //
     var mediaInfo = new chrome.cast.media.MediaInfo(
       /*"https://menubord-app.web.app/assets/screens/s005.PNG",
-      "image/PNG");
-      `https://menubord-app.web.app/assets/screens/${{screen_id}}.PNG`,
-      "image/PNG"*/
-      "../screens/android008.png"
+      "image/PNG");*/
+      `http://localhost:4200/assets/screens/${{screen_id}}.PNG`,
+      "image/PNG"
+     /* `../screens/android004.png`*/
       );
+    console.log("cast success");
     var request = new chrome.cast.media.LoadRequest(mediaInfo);
     session.loadMedia(request, onMediaLoadSuccess, onError);
     session.setTimeout(17000);

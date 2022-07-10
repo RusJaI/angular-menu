@@ -173,7 +173,7 @@ export class ScreenviewComponent implements OnInit{
   }
  
   buttonAction(){
-   // this.capture();
+    this.capture();
     console.log("button function");
     new castContent(this.tablestyle.tv_id);
     //X(this.tablestyle.tv_id);
