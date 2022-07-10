@@ -38,14 +38,14 @@ function start(){
   
   function onSessionRequestSuccess(session) {
     console.log('onSessionRequestSuccess', session);
-  
     //
     var mediaInfo = new chrome.cast.media.MediaInfo(
+      "http://35.184.95.5/assets/screens/"+screen_id+".png"
       /*"https://menubord-app.web.app/assets/screens/s005.PNG",
-      "image/PNG");*/
+      "image/PNG");
       `http://localhost:4200/assets/screens/${{screen_id}}.PNG`,
       "image/PNG"
-     /* `../screens/android004.png`*/
+      `../screens/android004.png`*/
       );
     console.log("cast success");
     var request = new chrome.cast.media.LoadRequest(mediaInfo);
