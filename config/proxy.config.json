@@ -1,6 +1,6 @@
 {
     "/pos/*": {
-        "target": "http://127.0.0.1:8000/",
+        "target": "http://35.184.95.5:8080/",
         "secure": false,
         "logLevel": "debug",
         "changeOrigin": true
