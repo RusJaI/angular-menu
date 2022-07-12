@@ -208,7 +208,7 @@ export class ScreenviewComponent implements OnInit{
     formData.append("image", file);
     formData.append("name",filename);
     var rootURL = '/pos';
-    var req= this.httpclient.post(rootURL + '/saveimage',formData,{responseType: 'blob'});
+    var req= this.httpclient.post(rootURL + '/saveimage',formData,{responseType: 'json'});
     req.subscribe(s=>{
       console.log("req : ",s);      
     })

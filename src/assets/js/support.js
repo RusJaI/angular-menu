@@ -72,6 +72,7 @@ function start(){
 
   window.castContent = function(screen_id) {
     this.screen_id=screen_id;
-    console.log('X args', this.screen_id);
+    //console.log('X args', this.screen_id);
+    console.log("cast url : ","http://35.184.95.5/assets/screens/"+screen_id+".png");
     chrome.cast.requestSession(onSessionRequestSuccess, onError);
 }
