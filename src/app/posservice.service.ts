@@ -37,7 +37,7 @@ getAllProductsRequest() {
 }
 
 processDjangoJson(respstring){
-  console.log("received from django : ",respstring);
+  //console.log("received from django : ",respstring);
  /* console.log("received from django : ",respstring);
 	var processed= respstring.replace(/'/g, '"');
 	processed=processed.replace(/None/g, "\"\"");
@@ -59,7 +59,7 @@ processJson(allitems){
   processed='['+processed+']';
   console.log("Processed",(processed));*/
   var itemarr=JSON.parse(allitems);
-  console.log("Processed",(itemarr));
+  //console.log("Processed",(itemarr));
   //var itemarr=this.temparr;
   return itemarr;
 }
@@ -112,7 +112,7 @@ getAllProducts(){
           counts.push(cnt);
         }
       });
-      console.log("Ele",counts);
+      //console.log("Ele",counts);
   });
   return of(counts);
 }

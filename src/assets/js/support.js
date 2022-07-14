@@ -65,14 +65,14 @@ function start(){
     }
   }
   
- /* function castContent() {
+  function castContent(screen_id) {
     //this.screen_id=sid;
-    chrome.cast.requestSession(onSessionRequestSuccess, onError);
-  }*/
-
-  window.castContent = function(screen_id) {
-    this.screen_id=screen_id;
-    //console.log('X args', this.screen_id);
     console.log("cast url : ","http://35.184.95.5/assets/screens/"+screen_id+".png");
     chrome.cast.requestSession(onSessionRequestSuccess, onError);
-}
+  }
+
+  window.argsSet = function(screen_id) {
+    this.screen_id=screen_id;
+    castContent(screen_id);
+    console.log('X args', this.screen_id);
+} 
