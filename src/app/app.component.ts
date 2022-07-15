@@ -31,7 +31,7 @@ export class AppComponent implements OnDestroy{
      // console.log("real screens : ",this.screen_list);
     });
   
-    setInterval(()=>{window.location.reload();},300000);
+    //setInterval(()=>{window.location.reload();},300000);
   }
  
   refreshPage(){
