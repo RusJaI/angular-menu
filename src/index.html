@@ -3,18 +3,50 @@
 <head>
   <meta charset="utf-8">
   <title>Menu</title>
+  <!--script src="//www.gstatic.com/cv/js/sender/v1/cast_sender.js"></script>
   <script type="text/javascript" src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js"></script>
   <script type="text/javascript" src="https://www.gstatic.com/cast/sdk/libs/sender/1.0/cast_framework.js"></script>
+  <script type="text/javascript" src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js"></script-->
+  
   <script type="text/javascript" src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js"></script>
+  <script type="text/javascript" src="http://www.gstatic.com/cast/sdk/libs/sender/1.0/cast_framework.js"></script>
+  <script type="text/javascript" src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js"></script>
+
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
 <body style="background-color:rgb(46, 179, 90);">
-  <script src="assets/js/support.js"></script>
+  <script type="text/javascript" src="assets/js/support.js"></script>
   <app-root></app-root>
 
- 
+  <script type="text/javascript">
+    var initializeCastApi = function() {
+    console.log('initializeCastApi');
+  
+    var sessionRequest = new chrome.cast.SessionRequest(
+      chrome.cast.media.DEFAULT_MEDIA_RECEIVER_APP_ID);
+    var apiConfig = new chrome.cast.ApiConfig(
+      sessionRequest, sessionListener, receiverListener);
+    chrome.cast.initialize(apiConfig, onInitSuccess, onError);
+  };
+  
+  if (!chrome.cast || !chrome.cast.isAvailable) {
+    setTimeout(initializeCastApi, 1000);
+  }
+  
+  function onInitSuccess() {
+    console.log('onInitSuccess');
+  }
+  
+  function onError(e) {
+    console.log('onError', e);
+  }
+  
+  function sessionListener(e) {
+    console.log('sessionListener', e);
+  }
+</script>  
   </body>
   </html>
   

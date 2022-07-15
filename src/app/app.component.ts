@@ -28,7 +28,7 @@ export class AppComponent implements OnDestroy{
       screens.forEach(scr=>{
         this.screen_list.push(scr);
       });
-      console.log("real screens : ",this.screen_list);
+     // console.log("real screens : ",this.screen_list);
     });
   
     setInterval(()=>{window.location.reload();},300000);

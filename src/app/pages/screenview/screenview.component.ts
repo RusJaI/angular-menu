@@ -9,7 +9,7 @@ import { saveAs } from 'file-saver';
 import { ScreenserviceService } from 'src/app/screenservice.service';
 
 declare var start: any;//,castContent:any;
-declare var castContent: (...args: any[]) => void;
+declare var argsSet: (...args: any[]) => void;
 
 @Component({
   selector: 'app-screenview',
@@ -71,7 +71,7 @@ export class ScreenviewComponent implements OnInit{
       selectedcategories.forEach(item=>{
         this.categoryList.push(item);
       });
-      console.log("selected list : ",this.categoryList);
+      //console.log("selected list : ",this.categoryList);
     });
 
     this.posService.getAllProductsRequest().pipe().subscribe((items:any) => {
@@ -80,14 +80,14 @@ export class ScreenviewComponent implements OnInit{
         this.allitemsList.push(item);
       })
     
-      console.log("Alll : ",this.allitemsList);
+      //console.log("Alll : ",this.allitemsList);
       this.getGramMap();
       this.setTagMap();
       this.distributeData();
       
       this.itemsforthisscreen=this.screendata_map.get(this.tablestyle.tv_id);
       this.screengrams=this.getscreengramsList();
-      console.log("screen grams : ",this.screengrams);
+      //console.log("screen grams : ",this.screengrams);
       
       this.checkIfVeryFirstItemForCategory();
     });
@@ -97,7 +97,7 @@ export class ScreenviewComponent implements OnInit{
     new start();
     await this.route.paramMap.subscribe( params =>{
       //this.tablestyle=params.get('tablestyle');
-      console.log("screenview:tablestyle",this.tablestyle);
+      //console.log("screenview:tablestyle",this.tablestyle);
       this.screen_id=this.tablestyle.tv_id;
       this.backgroundcolor=this.tablestyle.screen_bgcolor;
       if(this.backgroundcolor=="White"){
@@ -105,7 +105,7 @@ export class ScreenviewComponent implements OnInit{
       }else{
         this.textcolor="white";
       }
-      console.log("text color : ",this.backgroundcolor,this.textcolor);
+      //console.log("text color : ",this.backgroundcolor,this.textcolor);
       
       this.screenwidth=this.widthsclae;
       this.aspectratio=this.tablestyle.screen_height/this.tablestyle.screen_width;
@@ -121,7 +121,7 @@ export class ScreenviewComponent implements OnInit{
       this.screentype=this.tablestyle.content_type;
       this.displayimage="../../../../../pos/media/"+this.tablestyle.media_file;
 
-      console.log("#screenview:table dimensions : ",this.screenheight,this.screenwidth);
+      //console.log("#screenview:table dimensions : ",this.screenheight,this.screenwidth);
       this.imagewidth=this.screenwidth*0.85;
       this.screenheight=this.screenheight+"px";
       this.screenwidth=this.screenwidth+"px";
@@ -134,7 +134,7 @@ export class ScreenviewComponent implements OnInit{
   cnt=0;
   getFromCharCode(datacatg) {
     //this.current_catg=datacatg;
-    console.log("category view : screen , previous , current ",this.tablestyle.tv_id,this.previous_catg,this.current_catg);
+    //console.log("category view : screen , previous , current ",this.tablestyle.tv_id,this.previous_catg,this.current_catg);
    // return this.current_catg;
     this.previous_catg=this.current_catg;
 
@@ -149,7 +149,7 @@ export class ScreenviewComponent implements OnInit{
 
   initialcnt=0;
   setCatg(datacatg){
-    console.log("set category : ",this.tablestyle.tv_id,this.previous_catg,this.current_catg);
+    //console.log("set category : ",this.tablestyle.tv_id,this.previous_catg,this.current_catg);
     this.current_catg=datacatg;
     if(this.current_catg==this.previous_catg){
       this.ifcatgchanged=false;
@@ -173,16 +173,16 @@ export class ScreenviewComponent implements OnInit{
   }
  
   buttonAction(){
-   // this.capture();
-    console.log("button function");
-    new castContent(this.tablestyle.tv_id);
+    this.capture();
+    //console.log("button function");
+    new argsSet(this.tablestyle.tv_id)
     //X(this.tablestyle.tv_id);
     //new castContent();
   }
 
   capture(){ 
     this.captureService.getImage(this.screen.nativeElement, true).subscribe(img=>{
-      console.log("#image : ",img);
+      //console.log("#image : ",img);
       this.imgBase64=img;
       this.saveFile();
     })
@@ -208,9 +208,9 @@ export class ScreenviewComponent implements OnInit{
     formData.append("image", file);
     formData.append("name",filename);
     var rootURL = '/pos';
-    var req= this.httpclient.post(rootURL + '/saveimage',formData,{responseType: 'blob'});
+    var req= this.httpclient.post(rootURL + '/saveimage',formData,{responseType: 'json'});
     req.subscribe(s=>{
-      console.log("req : ",s);      
+      //console.log("req : ",s);      
     })
   }
 
@@ -222,9 +222,9 @@ export class ScreenviewComponent implements OnInit{
     var selectedcatg_count=this.categoryList.length;
     var cat_id,cat_items:any[]=[],item_count=0,display_limit,ifflagged=false,prevbalance;
     this.screen_list.forEach(scrn=>{
-      console.log("In distribute data :",scrn.tv_id);
+      //console.log("In distribute data :",scrn.tv_id);
       if(scrn.content_type=="Menu"){
-        console.log("In distribute data Menu :",scrn.tv_id);
+        //console.log("In distribute data Menu :",scrn.tv_id);
         sflag=true;
         prevbalance=0;
         while(sflag){
@@ -234,11 +234,11 @@ export class ScreenviewComponent implements OnInit{
           cat_id=this.getCategoryId(cflag);
           cat_items= this.getCategoryItems(cat_id);
           item_count=cat_items.length+prevbalance;
-          console.log("distribute data:catitemcount,iflag",item_count,cat_items);
+          //console.log("distribute data:catitemcount,iflag",item_count,cat_items);
           
           if((item_count-iflag)<maxrows){//less than screen size
             display_limit=item_count;
-            console.log("before receive : ",iflag," : ",display_limit);
+            //console.log("before receive : ",iflag," : ",display_limit);
             
             this.setScreenDisplayContent(scrn.tv_id,cat_items.slice(iflag,display_limit));
             prevbalance=display_limit-iflag
@@ -268,12 +268,12 @@ export class ScreenviewComponent implements OnInit{
         //media
       }
     });
-    console.log("distribute data map :",this.screendata_map);
+    //console.log("distribute data map :",this.screendata_map);
   }
 
   getCategoryId(cflag){
     var id= this.categoryList[cflag].Category;
-    console.log("appComponents:getCategoryId() :",id);
+    //console.log("appComponents:getCategoryId() :",id);
     return id;
   }
 
@@ -293,7 +293,7 @@ export class ScreenviewComponent implements OnInit{
         this.gramMap.set(itemname,submap);
       }
     })
-    console.log("gram map : ",this.gramMap);
+    //console.log("gram map : ",this.gramMap);
     
   }
 
@@ -303,7 +303,7 @@ export class ScreenviewComponent implements OnInit{
       var prodtags=item.tags;
       this.tagMap.set(itemname,prodtags);
     })
-    console.log("tag map : ",this.tagMap); 
+    //console.log("tag map : ",this.tagMap); 
   }
 
   getTag(prodname){
@@ -314,7 +314,7 @@ export class ScreenviewComponent implements OnInit{
       if(typeof(tagarr)=="string"||tagarr==null){
         tagarr=[];
       }
-      console.log("tag arr view: ",tagarr);
+      //console.log("tag arr view: ",tagarr);
       
       tagarr.forEach(t=>{
         tagstring=tagstring+" , "+t.tagName;
@@ -339,7 +339,7 @@ export class ScreenviewComponent implements OnInit{
                 item.productGrams=item.productGrams+","+element.productGrams;
             }
           })
-          console.log("duplicate : ",element.productName);
+          //console.log("duplicate : ",element.productName);
           
         }else{
           element.productGrams=element.productGrams.toString();
@@ -348,7 +348,7 @@ export class ScreenviewComponent implements OnInit{
         }
       }
     });
-    console.log("distribute data:items for category ",cat_id," :",categoryitems);
+    //console.log("distribute data:items for category ",cat_id," :",categoryitems);
     return categoryitems;
   }
 
@@ -359,7 +359,7 @@ export class ScreenviewComponent implements OnInit{
     if(this.gramMap.has(prodName)){
       tempmap=this.gramMap.get(prodName);
       gramval=parseFloat(gram);
-      console.log("go gram ",gram," ; ",tempmap.get(gramval));
+      //console.log("go gram ",gram," ; ",tempmap.get(gramval));
       if(tempmap.has(gramval)){
         return "$"+tempmap.get(gramval);
       }
@@ -376,7 +376,7 @@ export class ScreenviewComponent implements OnInit{
     this.posService.getCountForCategory(cat_id).subscribe((c) =>{
       cnt=c;
     });
-    console.log("#appcompponent:count for given category:",cnt);
+    //console.log("#appcompponent:count for given category:",cnt);
     return cnt;
   }
 
@@ -390,14 +390,14 @@ export class ScreenviewComponent implements OnInit{
   }
 
   setScreenDisplayContent(tv_id,content:any[]) {
-    console.log("Received : ",tv_id," data :",content);
+    //console.log("Received : ",tv_id," data :",content);
     
     var cntent=[];
     if(this.screendata_map.has(tv_id)){
       cntent=this.screendata_map.get(tv_id);
     }
     cntent = [ ...cntent, ...content];
-    console.log("content : ",cntent);
+    //console.log("content : ",cntent);
     
     this.screendata_map.set(tv_id,cntent);
   }
@@ -421,13 +421,13 @@ export class ScreenviewComponent implements OnInit{
       var firstcatgofmyscreen=this.screendata_map.get(myscreenid)[0].categoryId;
       prevscreencontent=this.screendata_map.get(prevscreenid);
       var lastcatgofprevscreen=prevscreencontent[prevscreencontent.length-1].categoryId;
-      console.log("reveal -- :",firstcatgofmyscreen,lastcatgofprevscreen);
+      //console.log("reveal -- :",firstcatgofmyscreen,lastcatgofprevscreen);
       if(firstcatgofmyscreen==lastcatgofprevscreen){
         this.is_firstrow_belongs_to_new_catg=false;
       }else{
         this.is_firstrow_belongs_to_new_catg=true;
       }
     }
-    console.log(" is first row ",this.tablestyle.tv_id,this.is_firstrow_belongs_to_new_catg);
+    //console.log(" is first row ",this.tablestyle.tv_id,this.is_firstrow_belongs_to_new_catg);
   }
 }
