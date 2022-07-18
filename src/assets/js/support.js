@@ -31,26 +31,21 @@ function start(){
   function receiverListener(availability) {
     console.log('receiverListener', availability);
   
-    if(availability === chrome.cast.ReceiverAvailability.AVAILABLE) {
+  /*  if(availability === chrome.cast.ReceiverAvailability.AVAILABLE) {
       $(".button").removeAttr("disabled").text("Start");
-    }
+    }*/
   }
   
   function onSessionRequestSuccess(session) {
     console.log('onSessionRequestSuccess', session);
     //
     var mediaInfo = new chrome.cast.media.MediaInfo(
-      "http://35.184.95.5/assets/screens/"+screen_id+".png"
-      /*"https://menubord-app.web.app/assets/screens/s005.PNG",
-      "image/PNG");
-      `http://localhost:4200/assets/screens/${{screen_id}}.PNG`,
-      "image/PNG"
-      `../screens/android004.png`*/
+      "https://canadisplay.com/assets/screens/"+screen_id+".png"
       );
     console.log("cast success");
     var request = new chrome.cast.media.LoadRequest(mediaInfo);
     session.loadMedia(request, onMediaLoadSuccess, onError);
-    session.setTimeout(17000);
+    //session.setTimeout(17000);
   }
   
   function onMediaLoadSuccess(e) {
@@ -68,7 +63,8 @@ function start(){
   function castContent(screen_id) {
     //this.screen_id=sid;
     console.log("cast url : ","http://35.184.95.5/assets/screens/"+screen_id+".png");
-    chrome.cast.requestSession(onSessionRequestSuccess, onError);
+    //chrome.cast.requestSession(onSessionRequestSuccess, onError);
+    setTimeout( chrome.cast.requestSession(onSessionRequestSuccess, onError), 2000);
   }
 
   window.argsSet = function(screen_id) {
