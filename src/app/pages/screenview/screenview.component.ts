@@ -8,7 +8,7 @@ import { HttpClient } from '@angular/common/http';
 import { saveAs } from 'file-saver';
 import { ScreenserviceService } from 'src/app/screenservice.service';
 
-declare var start: any;//,castContent:any;
+//declare var start: any;//,castContent:any;
 declare var argsSet: (...args: any[]) => void;
 
 @Component({
@@ -94,7 +94,7 @@ export class ScreenviewComponent implements OnInit{
    }
 
   async ngOnInit() {
-    new start();
+    //new start();
     await this.route.paramMap.subscribe( params =>{
       //this.tablestyle=params.get('tablestyle');
       //console.log("screenview:tablestyle",this.tablestyle);

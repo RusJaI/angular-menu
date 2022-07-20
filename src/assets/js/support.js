@@ -1,5 +1,5 @@
 var screen_id=null;
-function start(){
+/*function start(){
     var initializeCastApi = function() {
     console.log('initializeCastApi');
   
@@ -33,7 +33,11 @@ function start(){
   
   /*  if(availability === chrome.cast.ReceiverAvailability.AVAILABLE) {
       $(".button").removeAttr("disabled").text("Start");
-    }*/
+    }
+  }*/
+  
+  function onError(e) {
+    console.log('onError', e);
   }
   
   function onSessionRequestSuccess(session) {
@@ -45,7 +49,7 @@ function start(){
     console.log("cast success");
     var request = new chrome.cast.media.LoadRequest(mediaInfo);
     session.loadMedia(request, onMediaLoadSuccess, onError);
-    //session.setTimeout(17000);
+    session.setTimeout(17000);
   }
   
   function onMediaLoadSuccess(e) {
@@ -61,9 +65,7 @@ function start(){
   }
   
   function castContent(screen_id) {
-    //this.screen_id=sid;
-    console.log("cast url : ","http://35.184.95.5/assets/screens/"+screen_id+".png");
-    //chrome.cast.requestSession(onSessionRequestSuccess, onError);
+    console.log("cast url : ","https://canadisplay.com/assets/screens/"+screen_id+".png");
     setTimeout( chrome.cast.requestSession(onSessionRequestSuccess, onError), 2000);
   }
 
@@ -71,4 +73,5 @@ function start(){
     this.screen_id=screen_id;
     castContent(screen_id);
     console.log('X args', this.screen_id);
+    return false; 
 } 

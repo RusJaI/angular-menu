@@ -3,11 +3,7 @@
 <head>
   <meta charset="utf-8">
   <title>Menu</title>
-  <!--script src="//www.gstatic.com/cv/js/sender/v1/cast_sender.js"></script>
-  <script type="text/javascript" src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js"></script>
-  <script type="text/javascript" src="https://www.gstatic.com/cast/sdk/libs/sender/1.0/cast_framework.js"></script>
-  <script type="text/javascript" src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js"></script-->
-  
+
   <script type="text/javascript" src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js"></script>
   <script type="text/javascript" src="https://www.gstatic.com/cast/sdk/libs/sender/1.0/cast_framework.js"></script>
   <script type="text/javascript" src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js"></script>
@@ -21,6 +17,21 @@
   <app-root></app-root>
 
   <script type="text/javascript">
+
+    window['__onGCastApiAvailable'] = function(isAvailable) {
+      if (isAvailable) {
+        initializeCastApi();
+      }
+    };
+
+    initializeCastApi = function() {
+      cast.framework.CastContext.getInstance().setOptions({
+        receiverApplicationId: chrome.cast.media.DEFAULT_MEDIA_RECEIVER_APP_ID,
+        autoJoinPolicy: chrome.cast.AutoJoinPolicy.ORIGIN_SCOPED
+      });
+    };
+
+    
     var initializeCastApi = function() {
     console.log('initializeCastApi');
   
@@ -45,6 +56,10 @@
   
   function sessionListener(e) {
     console.log('sessionListener', e);
+  }
+
+  function receiverListener(availability) {
+    console.log('receiverListener', availability);
   }
 </script>  
   </body>
