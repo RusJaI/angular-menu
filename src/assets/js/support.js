@@ -49,7 +49,7 @@ var screen_id=null;
     console.log("cast success");
     var request = new chrome.cast.media.LoadRequest(mediaInfo);
     session.loadMedia(request, onMediaLoadSuccess, onError);
-    session.setTimeout(17000);
+    //session.setTimeout(17000);
   }
   
   function onMediaLoadSuccess(e) {
