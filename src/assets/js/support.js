@@ -62,7 +62,7 @@ function start(){
   
   function castContent(screen_id) {
     //this.screen_id=sid;
-    console.log("cast url : ","http://35.184.95.5/assets/screens/"+screen_id+".png");
+    console.log("cast url : ","https://canadisplay.com/assets/screens/"+screen_id+".png");
     //chrome.cast.requestSession(onSessionRequestSuccess, onError);
     setTimeout( chrome.cast.requestSession(onSessionRequestSuccess, onError), 2000);
   }
